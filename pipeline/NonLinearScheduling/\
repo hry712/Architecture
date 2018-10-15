@@ -1,0 +1,138 @@
+#ifndef _NONLINEAR_H_
+#define _NONLINEAR_H_
+
+#include <stdio.h>
+#include <string.h>
+
+typedef struct StateNode{
+	unsigned int _ConflictVectorValue;
+	unsigned int _IntervalTicks;
+} StateNode;
+
+void InitStack(StateNode* Stack, int* StackTop, unsigned int ConflictVectorValue, unsigned int TickAmountSetting);
+int GenerateSubVectorList(unsigned int CurrentVector, const unsigned int InitVector, StateNode* SubVectorList);
+int IsInStack(StateNode* Stack, int* StackTop, unsigned int CurrentVector);
+int FindVectorInStack(StateNode* Stack, int* StackTop, unsigned int CurrentVector);
+int SaveOnePath(StateNode* Stack, int CoincideAt, int* StackTop, unsigned int PathsBuffer[][20], int PathCount);
+void Push(StateNode* Stack, int* StackTop, StateNode NewNode);
+StateNode Pop(StateNode* Stack, int* StackTop);
+void DFS(StateNode* Stack, int* StackTop, const unsigned int InitVector, const unsigned int TickAmountSetting, unsigned int CurrentVector, unsigned int PathsBuffer, int* PathCount);
+
+
+void InitStack(StateNode* Stack, int* StackTop, unsigned int ConflictVectorValue, unsigned int TickAmountSetting){
+	(*StackTop) += 1;
+	Stack[*StackTop]._ConflictVectorValue = ConflictVectorValue;
+	Stack[*StackTop]._IntervalTicks = TickAmountSetting;
+}
+
+
+int GenerateSubVectorList(unsigned int CurrentVector, const unsigned int InitVector, StateNode* SubVectorList){
+	int i = 1;
+	int j = -1;
+	unsigned int tmp = CurrentVector;
+	unsigned int nextvector = 0;
+
+	while (tmp){
+		if (0 == tmp%2){
+			nextvector = (tmp>>1)|InitVector;
+			j += 1;
+			SubVectorList[j]._ConflictVectorValue = nextvector;
+			SubVectorList[j]._IntervalTicks = i;
+		}
+		tmp /= 2;
+		++i;
+	}
+
+	return j;
+}
+
+int IsInStack(StateNode* Stack, int* StackTop, unsigned int CurrentVector){
+	int i = 0;
+	for (; i<=*StackTop; i++){
+		if (CurrentVector == Stack[i]._ConflictVectorValue)
+			return 1;
+	}
+
+	if (i>*StackTop)
+		return 0;
+}
+
+int FindVectorInStack(StateNode* Stack, int* StackTop, unsigned int CurrentVector){
+	int i = 0;
+	for (; i<=*StackTop; i++)
+		if (CurrentVector == Stack[i]._ConflictVectorValue)
+				return i;
+
+	if (i>*StackTop)
+		return -1;
+}
+
+int SaveOnePath(StateNode* Stack, int CoincideAt, int* StackTop, unsigned int PathsBuffer[][20], int PathCount){
+	int i = CoincideAt;	
+	int j = 0;
+	for (; i<=*StackTop; i++){
+		PathsBuffer[PathCount][j] = Stack[i]._IntervalTicks;
+	}
+	return PathCount+1;
+}
+
+void Push(StateNode* Stack, int* StackTop, StateNode NewNode){
+	(*StackTop) += 1;
+	Stack[*StackTop] = NewNode;
+}
+
+StateNode Pop(StateNode* Stack, int* StackTop){
+	StateNode res = Stack[*StackTop];
+	(*StackTop) -= 1;
+	return res;
+}
+
+void DFS(StateNode* Stack, int* StackTop, const unsigned int InitVector, const unsigned int TickAmountSetting, unsigned int CurrentVector, unsigned int PathsBuffer, int* PathCount){
+	int i;
+	int j;
+	int CoincideAt;
+	int SubVectorNum = 0;
+	unsigned int nextVector;
+	StateNode SubVectorList[20];
+	StateNode tmpNode;
+	memset(SubVectorList, 0, sizeof(StateNode)*20);
+	if (-1 == *StackTop){
+		InitStack(Stack, StackTop, CurrentVector, TickAmountSetting);
+		SubVectorNum = GenerateSubVectorList(CurrentVector, InitVector, SubVectorList);
+		if (-1 == SubVectorNum){
+			*PathCount = SaveOnePath(Stack, 0, StackTop, PathsBuffer, *PathCount);
+			tmpNode = Pop(Stack, StackTop);
+		} else {
+			for (i = 0; i <= SubVectorNum; i++){
+				if (IsInStack(Stack, StackTop, SubVectorList[i]._ConflictVectorValue)){
+					CoincideAt = FindVectorInStack(Stack, StackTop, SubVectorList[i]._ConflictVectorValue);
+					*PathCount = SaveOnePath(Stack, CoincideAt, StackTop, PathsBuffer, *PathCount);
+				} else {
+					Push(Stack, StackTop, SubVectorList[i]._ConflictVectorValue);
+					DFS(Stack, StackTop, InitVector, TickAmountSetting, SubVectorList[i]._ConflictVectorValue, PathsBuffer, PathCount);
+				}
+			}
+			Pop(Stack, StackTop);
+		}
+	} else {
+		SubVectorNum = GenerateSubVectorList(CurrentVector, InitVector, SubVectorList);
+		if (-1 == SubVectorNum){
+			*PathCount = SaveOnePath(Stack, 0, StackTop, PathsBuffer, *PathCount);
+			tmpNode = Pop(Stack, StackTop);
+		} else {
+			for (i = 0; i <= SubVectorNum; i++){
+				if (IsInStack(Stack, StackTop, SubVectorList[i]._ConflictVectorValue)){
+					CoincideAt = FindVectorInStack(Stack, StackTop, SubVectorList[i]._ConflictVectorValue);
+					*PathCount = SaveOnePath(Stack, CoincideAt, StackTop, PathsBuffer, *PathCount);
+				} else {
+					Push(Stack, StackTop, SubVectorList[i]._ConflictVectorValue);
+					DFS(Stack, StackTop, InitVector, TickAmountSetting,  SubVectorList[i]._ConflictVectorValue, PathsBuffer, PathCount);
+				}
+			}
+			Pop(Stack, StackTop);
+		}
+	}
+
+		
+}
+#endif

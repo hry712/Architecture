@@ -1,0 +1,21 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ConflictVector	nonlinear.h	/^	unsigned int ConflictVector;$/;"	m	struct:State
+DFSforDirectedGraph	nonlinear.h	/^void DFSforDirectedGraph(State * Stack, unsigned int StackTop, const unsigned int InitCfltVector, const unsigned int TimeTickLimit){$/;"	f
+GenerateConflictVectorList	nonlinear.h	/^void GenerateConflictVectorList(unsigned int CrntCfltVector, const unsigned int TimeTickLimit, const unsigned int InitCfltVector, State * CfltVctrList, int* VctrNum){$/;"	f
+IsInVectorStack	nonlinear.h	/^int IsInVectorStack(State* Stack, int Len, unsigned int Vector){$/;"	f
+PopVectorStack	nonlinear.h	/^void PopVectorStack(State* Stack, unsigned int* StackCursor){$/;"	f
+PrintStack	nonlinear.h	/^void PrintStack(State * Stack, unsigned int StackTop){$/;"	f
+PushVectorStack	nonlinear.h	/^void PushVectorStack(State * Stack, unsigned int * StackTop, State NewNode){$/;"	f
+SaveCurrentPath	nonlinear.h	/^void SaveCurrentPath(State* Stack, unsigned int StackCursor, unsigned int Paths[][15], unsigned int PathCount){$/;"	f
+SetForbiddenTable	nonlinear.h	/^void SetForbiddenTable(unsigned int* SrcRow, int Len, unsigned int* Res){$/;"	f
+StackSize	nonlinear.c	5;"	d	file:
+State	nonlinear.h	/^typedef struct State{$/;"	s
+State	nonlinear.h	/^} State;$/;"	t	typeref:struct:State
+_NONLINEAR_H_	nonlinear.h	2;"	d
+main	nonlinear.c	/^int main(void){$/;"	f
+timeticks	nonlinear.h	/^	unsigned int timeticks;$/;"	m	struct:State
