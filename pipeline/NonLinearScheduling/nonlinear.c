@@ -93,13 +93,11 @@ int main(void){
 #endif
 
 	MinimumAvgSite = FindMinAvgIntervalTicks(Paths, pathcount, timeticks);
-#ifdef DEBUG
 	printf("Find the minimum average ticks at site %d:\n", MinimumAvgSite);
 	j = 0;
 		while (Paths[MinimumAvgSite][j]._ConflictVectorValue)
 			printf("(%d, %d)  ", Paths[MinimumAvgSite][j]._ConflictVectorValue, Paths[MinimumAvgSite][j++]._IntervalTicks);
 		printf("\n");
-#endif
 
 	return 0;
 }
